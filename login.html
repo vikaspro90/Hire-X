@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
-<html>
+<html ng-app="hirexModule">
 <head>
-<title>Welcome to Hire-X</title>
+<title>LOGIN</title>
 <!-- Bootstrap -->
 <link href="web/css/bootstrap.min.css" rel='stylesheet' type='text/css' />
 <link href="web/css/bootstrap.css" rel='stylesheet' type='text/css' />
@@ -15,11 +15,21 @@
 <!-- start slider -->
 <link href="web/css/slider.css" rel="stylesheet" type="text/css" media="all" />
 <script type="text/javascript" src="web/js/modernizr.custom.28468.js"></script>
+<script type="text/javascript" src="web/js/jquery.cslider.js"></script>
+	<script type="text/javascript">
+			$(function() {
+
+				$('#da-slider').cslider({
+					autoplay : true,
+					bgincrement : 450
+				});
+			});
+		</script>
 <!-- font-Awesome -->
    	<link rel="stylesheet" href="fonts/web/css/font-awesome.min.css">
 <!-- font-Awesome -->
 </head>
-<body>
+<body ng-controller="loginController">
 <div class="header_bg">
 <div class="container">
 	<div class="row header">
@@ -42,8 +52,8 @@
 		    <!-- Collect the nav links, forms, and other content for toggling -->
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
-		        <li><a href="index.html">Home</a></li>
-		        <li class="active"><a href="about.html">About</a></li>
+		        <li class="active"><a href="index.html">Home</a></li>
+		        <li><a href="about.html">About</a></li>
 		        <li><a href="contact.html">Contact</a></li>
 		      </ul>
 		    </div><!-- /.navbar-collapse -->
@@ -55,15 +65,50 @@
 		</div>
 	</div>
 </div>
-<div class="main_bg"><!-- start main -->
+
+
+
+<div class="main_btm"><!-- start main_btm -->
 	<div class="container">
-		<div class="about row">
-			<h2>about us</h2>
-			<p class="para">Hire-X is a new extension of the originally started skills development group Vision-X whose mission is to train professionals on various aspects of Personality Development which includes Social Skills, Business Etiquettes, Negotiation Techniques, Presentation and Interviewing Skills etc. Vision-X is located in Indianapolis, Indiana and was established in 1985. From its inception, it has gained popularity among people and as a result diversified itself into many branches. Although Vision-X initial target audience was towards Trained Professionals it grew much popular among Aspiring Job Seekers. This has led to the formation of a new sub domain Hire-x whose main objective is to help job hunters and employers to interconnect.</p>
-			<!--<p class="para">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words. </p>-->
-		</div>
-	</div>
-</div><!-- end main -->
+		<div class="main row">
+
+				<div class="col-md-8">
+				  <div class="contact-form">
+				  	<h2>Login</h2>
+					    <form name="userForm" ng-submit="login()">
+					    	<div>
+						    	<span>Email ID</span>
+						    	<span><input class="form-control" type="text" name="email" ng-model="user.emailId"></span>
+						    </div>
+						    <div>
+						    	<span>Password</span>
+						    	<span><input class="form-control" type="password" name="password" ng-model="user.password"></span>
+						    </div>
+						    <div>
+						    	<span>Role</span>
+								<select class="form-control" name="role" ng-model="user.role">
+									<option value="employer">Employer</option>
+									<option value="employee">Job seeker</option>
+								</select>
+						    </div>
+							<div>
+						   		<label class="fa-btn btn-1 btn-1e"><input type="submit" value="login"></label>
+							</div>
+							<div class="copy-text-center">
+								<span>No account yet? Create an account today <a href = "signup.html">here</a></span>
+							</div>
+					    </form>
+						<p class="copy-text-center bg-info">{{ loginMessage }}</p>
+				    </div>
+  			</div>	
+			<div class = "container">
+			
+			</div>
+  			<div class="clearfix"></div>		
+			</div>
+	</div> 
+</div>
+</div>
 <div class="footer_bg"><!-- start footer -->
 	<div class="container">
 		<div class="row  footer">
@@ -75,3 +120,5 @@
 </div>
 </body>
 </html>
+<script src="web\js\angular.min.js"></script>
+<script src="web\js\hirex.js"></script>

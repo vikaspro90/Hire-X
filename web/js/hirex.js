@@ -52,7 +52,7 @@ var hirex = angular .module("hirexModule",[])
 									if ($scope.loginData) {
 										if($scope.loginData== '1'){
 											$scope.loginMessage = "Logging in. Please wait..";
-											if ($scope.user.role == "employee") {
+											if ($scope.user.role == "jobseeker") {
 												$window.location.href = "jobseeker.html";
 											}
 											else {
@@ -104,7 +104,7 @@ var hirex = angular .module("hirexModule",[])
 								allGood = false;
 								$scope.signupMessage = "Please enter a valid email id.";
 							}
-							// check if first name is empty
+							// check if name is empty
 							if(name.value.trim() === ""){
 								allGood = false;
 								name.classList.add('error');
@@ -143,9 +143,9 @@ var hirex = angular .module("hirexModule",[])
 							
 							//Need to check if passswords match or not and execute as below if they match or need to take input again.
 							if(allGood){
-								$scope.signupMessage = "Please wait while we submit your data...";
 								if($scope.user.password === $scope.password2) {
-									$scope.signupMessage = "";
+									$scope.signupMessage = "Please wait while we submit your data...";
+									console.log($scope.user.name);
 									$http({
 										method 	: "POST",
 										url 	: instanceURL + "signup",
@@ -158,7 +158,7 @@ var hirex = angular .module("hirexModule",[])
 										if ($scope.signupData == '1') {
 											$scope.signupMessage = "Registered. Redirecting to home..";
 											// redirect to home page.
-											if ($scope.user.role == "employee") {
+											if ($scope.user.role == "jobseeker") {
 												$window.location.href = "jobseeker.html";
 											}
 											else {
@@ -176,6 +176,38 @@ var hirex = angular .module("hirexModule",[])
 									$scope.signupMessage = "Passwords do not match.";
 								}
 							}
+						};
+					})
+					.controller("updateController", function($scope, $http, $window){
+						$scope.details = {};
+						$scope.updateMessage = "";
+						//////
+						// First of all we need to get the details of the user and diplay them
+						//////
+						$scope.update = function(){
+							$scope.updateMessage = "Your details are being updated...";
+							// angular trims the input fields by default, so no need to trim them before sending
+							console.log($scope.details);
+							$http({
+									method : "POST",
+									url : instanceURL + "updateJobseeker",
+									data : $scope.details
+							})
+							.then(function(response) {
+								// This is a success callback and will be called for status 200-299
+								$scope.updateData = response.data;
+								console.log($scope.responseData);
+								//based on the response, we will either show an error message or redirect the user to the homepage
+								if($scope.responseData== '1'){
+									$scope.updateMessage = "Your details have been updated as requested.";
+								} else {
+									$scope.updateMessage = "Sorry. An error occured and your details could not be updated.";
+								}
+							},
+							function(response){
+								// This is a failure callback
+								$scope.updateMessage = "Oops something went wrong. Please try after sometime.";
+							});
 						};
 					})
 					.config(function ($httpProvider) {

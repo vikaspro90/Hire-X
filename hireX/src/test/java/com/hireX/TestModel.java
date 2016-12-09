@@ -7,9 +7,9 @@ public class TestModel {
 		// TODO Auto-generated method stub
 		String email = "vikas1590@gmail.com";
 		String password = "vikas1590";
-		String role = "employee";
+		String role = "aspirant";
 //		BaseModel test = new BaseModel();
 		System.out.println(BaseModel.verifyLogin(email, password, role));
-		BaseModel.addUser("vikaspro90@gmail.com", "vvvv", "employee", "vikas");
+		BaseModel.addUser("vikaspro90@gmail.com", "vvvv", "aspirant", "vikas");
 	}
 }

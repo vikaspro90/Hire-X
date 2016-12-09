@@ -61,5 +61,17 @@ public class BaseController {
 			else
 				return 0;
 		});
+		
+		post("/updateJobseeker",(req, res)->{
+			
+			Gson gson = new Gson();
+			res.type("application/json");
+			updateControllerParams params = gson.fromJson(req.body(), updateControllerParams.class);
+			System.out.println(params.major);
+			if(BaseModel.updateJobseeker(params.emailId, params.major, params.exp, params.relocation, params.uscitizen, params.notice, params.gender, params.veteran, params.disabled))
+				return 1;
+			else
+				return 0;
+		});
 	}
 }

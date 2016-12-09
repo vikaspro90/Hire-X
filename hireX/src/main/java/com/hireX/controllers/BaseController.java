@@ -1,9 +1,10 @@
 package com.hireX.controllers;
 import com.google.gson.Gson;
-
+import org.bson.Document;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import com.hireX.models.*;
 import static spark.Spark.*;
-import java.util.*;
 
 public class BaseController {
 	private static void enableCORS(final String origin, final String methods, final String headers) {
@@ -35,16 +36,11 @@ public class BaseController {
 	public static void main(String[] args){
 		enableCORS("http://dev.localhost.com", "POST", "");
 		post("/login",(req, res)->{
-			Gson gson = new Gson();
 			res.type("application/json");
-			System.out.println(req.contentType());
-			System.out.println(req.body());
-			System.out.println(req.queryParams("role"));
-			loginControllerParams params = gson.fromJson(req.body(),loginControllerParams.class);
-			System.out.println(params.emailId);
-			System.out.println(params.password);
-			System.out.println(params.role);
-			if(BaseModel.verifyLogin(params.emailId,params.password,params.role))
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = (JSONObject)parser.parse(req.body());
+			
+			if(BaseModel.verifyLogin((String)jsonObj.get("emailId"), (String)jsonObj.get("password"), (String)jsonObj.get("role")))
 				return 1;
 			else
 				return 0;
@@ -52,11 +48,13 @@ public class BaseController {
 		
 		post("/signup",(req, res)->{
 			
-			Gson gson = new Gson();
+//			Gson gson = new Gson();
 			res.type("application/json");
-			signupControllerParams params = gson.fromJson(req.body(),signupControllerParams.class);
-			System.out.println(params.role);
-			if(BaseModel.addUser(params.emailId, params.password, params.role, params.fullName))
+//			signupControllerParams params = gson.fromJson(req.body(),signupControllerParams.class);
+//			System.out.println(params.role);
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = (JSONObject)parser.parse(req.body());
+			if(BaseModel.addUser((String)jsonObj.get("emailId"), (String)jsonObj.get("password"), (String)jsonObj.get("role"), (String)jsonObj.get("name")))
 				return 1;
 			else
 				return 0;
@@ -64,14 +62,27 @@ public class BaseController {
 		
 		post("/updateJobseeker",(req, res)->{
 			
-			Gson gson = new Gson();
+//			Gson gson = new Gson();
 			res.type("application/json");
-			updateControllerParams params = gson.fromJson(req.body(), updateControllerParams.class);
-			System.out.println(params.major);
-			if(BaseModel.updateJobseeker(params.emailId, params.major, params.exp, params.relocation, params.uscitizen, params.notice, params.gender, params.veteran, params.disabled))
+//			updateControllerParams params = gson.fromJson(req.body(), updateControllerParams.class);
+//			System.out.println(params.major);
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = (JSONObject)parser.parse(req.body());
+			if(BaseModel.updateJobseeker((String)jsonObj.get("emailId"), (String)jsonObj.get("major"), (String)jsonObj.get("exp"), (String)jsonObj.get("relocation"), (String)jsonObj.get("uscitizen"), (String)jsonObj.get("notice"), (String)jsonObj.get("gender"), (String)jsonObj.get("veteran"), (String)jsonObj.get("disabled")))
 				return 1;
 			else
 				return 0;
+		});
+		
+		post("/getJobseekerDetails",(req, res)->{
+			System.out.println("Getting job seeker details.");
+//			Gson gson = new Gson();
+			res.type("application/json");
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = (JSONObject)parser.parse(req.body());
+//			getDetailsControllerParams params = gson.fromJson(req.body(), getDetailsControllerParams.class);
+			String details = BaseModel.getJobseekerDetails((String)jsonObj.get("emailId"));
+			return details;
 		});
 	}
 }

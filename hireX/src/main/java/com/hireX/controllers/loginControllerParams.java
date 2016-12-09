@@ -5,9 +5,7 @@ public class loginControllerParams {
 	String emailId;
 	String password;
 	String role;
-	public loginControllerParams(){
-		
-	}
+	
 	public loginControllerParams(String emailId, String password, String role){
 		this.emailId=emailId;
 		this.password=password;

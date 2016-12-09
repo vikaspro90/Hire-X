@@ -198,7 +198,7 @@ var hirex = angular .module("hirexModule",[])
 								$scope.updateData = response.data;
 								console.log($scope.responseData);
 								//based on the response, we will either show an error message or redirect the user to the homepage
-								if($scope.responseData== '1'){
+								if($scope.responseData== '1') {
 									$scope.updateMessage = "Your details have been updated as requested.";
 								} else {
 									$scope.updateMessage = "Sorry. An error occured and your details could not be updated.";
@@ -209,6 +209,81 @@ var hirex = angular .module("hirexModule",[])
 								$scope.updateMessage = "Oops something went wrong. Please try after sometime.";
 							});
 						};
+					})
+					.controller("profileController", function($scope, $http, $window){
+						$scope.emailId = "";
+						var url = document.location.href;
+						var params = url.split('?')[1];
+						if (params){
+							$scope.emailId = params.split('=')[1];
+						}
+						if($scope.emailId){
+							$scope.profileMessage = "Please wait while we fetch the profile details of "+$scope.emailId+".";
+							// fetch the details for the email
+							var details = {"emailId":$scope.emailId};
+							console.log("sending req");
+							console.log(details);
+							$http({
+									method : "POST",
+									url : instanceURL + "getJobseekerDetails",
+									data : details
+							})
+							.then(function(response) {
+								// This is a success callback and will be called for status 200-299
+								$scope.profileData = response.data;
+								$scope.profileMessage = "Below are the details of "+$scope.profileData.name+".";
+								if($scope.profileData.major) {
+									$scope.major = $scope.profileData.major;
+								} else {
+									$scope.major = "Not updated";
+								}
+								if($scope.profileData.exp) {
+									$scope.exp = $scope.profileData.exp;
+								} else {
+									$scope.exp = "Not updated";
+								}
+								if($scope.profileData.relocation) {
+									$scope.relocation = $scope.profileData.relocation;
+								} else {
+									$scope.relocation = "Not updated";
+								}
+								if($scope.profileData.uscitizen) {
+									$scope.uscitizen = $scope.profileData.uscitizen;
+								} else {
+									$scope.uscitizen = "Not updated";
+								}
+								if($scope.profileData.notice) {
+									$scope.notice = $scope.profileData.notice;
+								} else {
+									$scope.notice = "Not updated";
+								}
+								if($scope.profileData.gender) {
+									$scope.gender = $scope.profileData.gender;
+								} else {
+									$scope.gender = "Not updated";
+								}
+								if($scope.profileData.veteran) {
+									$scope.veteran = $scope.profileData.veteran;
+								} else {
+									$scope.veteran = "Not updated";
+								}
+								if($scope.profileData.disabled) {
+									$scope.disabled = $scope.profileData.disabled;
+								} else {
+									$scope.disabled = "Not updated";
+								}								
+							},
+							function(response){
+								console.log(response.data);
+								// This is a failure callback
+								$scope.profileMessage = "Oops something went wrong. Please try after sometime.";
+							});
+						} else {
+							$scope.profileMessage = "The given person is not in our database.";
+						}
+					})
+					.controller("displayResults", function($scope, $http, $window){
+						
 					})
 					.config(function ($httpProvider) {
 						$httpProvider.defaults.withCredentials = true;

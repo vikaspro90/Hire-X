@@ -5,14 +5,12 @@ public class signupControllerParams {
 	public String emailId;
 	public String password;
 	public String role;
-	public String fullName;
-	public signupControllerParams(){
-		
-	}
-	public signupControllerParams(String emailId, String password, String role,String fullName){
+	public String name;
+	
+	public signupControllerParams(String emailId, String password, String role, String name){
 		this.emailId=emailId;
 		this.password=password;
 		this.role=role;
-		this.fullName=fullName;
+		this.name=name;
 	}
 }

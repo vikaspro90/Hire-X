@@ -61,27 +61,46 @@ public class BaseModel {
 	}
 	
 	public static boolean updateJobseeker(String email, String major, String exp, String relocation, String uscitizen, String notice, String gender, String veteran, String disabled) {
+		// Need this to update the details of the job seeker
 		boolean status = true;
 		MongoDatabase db = getConnection();
 		MongoCollection<Document> col = db.getCollection("jobseekers");
 		// update the document for the given emailID
 		Document data = new Document();
-		data.put("$set", new Document("major", major));
-		data.put("$set", new Document("exp", exp));
-		data.put("$set", new Document("relocation", relocation));
-		data.put("$set", new Document("uscitizen", uscitizen));
-		data.put("$set", new Document("notice", notice));
-		data.put("$set", new Document("veteran", veteran));
-		data.put("$set", new Document("gender", gender));
-		data.put("$set", new Document("disabled", disabled));
 		Document who = new Document("email", new Document("$eq", email));
+		data.put("$set", new Document("major", major));
+		col.updateOne(who, data);
+		data.put("$set", new Document("exp", exp));
+		col.updateOne(who, data);
+		data.put("$set", new Document("relocation", relocation));
+		col.updateOne(who, data);
+		data.put("$set", new Document("uscitizen", uscitizen));
+		col.updateOne(who, data);
+		data.put("$set", new Document("notice", notice));
+		col.updateOne(who, data);
+		data.put("$set", new Document("veteran", veteran));
+		col.updateOne(who, data);
+		data.put("$set", new Document("gender", gender));
+		col.updateOne(who, data);
+		data.put("$set", new Document("disabled", disabled));
 		col.updateOne(who, data);
 		return status;
 	}
 	
-	public static ArrayList<Document> getJobseekers(String major, String exp, String relocation, String uscitigen, String notice, String gender, String veteran, String disabled) {
-		
-		ArrayList<Document> jobseekers = new ArrayList<Document>();
+	public static String getJobseekerDetails(String email) {
+		// Need this to fetch the details of the job seeker 
+		// whose profile is to be updated or who is being viewed by the employer.
+		MongoDatabase db = getConnection();
+		MongoCollection<Document> col = db.getCollection("jobseekers");
+		Document query = new Document("email", new Document("$eq", email));
+		Document details = col.find(query).into(new ArrayList<Document>()).get(0);
+		return details.toJson();
+	}
+	
+	public static ArrayList<String> getJobseekers(String major, String exp, String relocation, String uscitigen, String notice, String gender, String veteran, String disabled) {
+		// This gets the details of all the job seekers that match the criteria
+		// and returns a list of json strings
+		ArrayList<String> jobseekers = new ArrayList<String>();
 		
 		return jobseekers;
 	}

@@ -12,8 +12,8 @@ public class signupController {
 			res.type("application/json");
 			signupControllerParams params = gson.fromJson(req.body(),signupControllerParams.class);
 			System.out.println(params.role);
-			if(BaseModel.addUser(params.emailId,params.password,params.role,params.fullName))
-			return 1;
+			if(BaseModel.addUser(params.emailId,params.password,params.role,params.name))
+				return 1;
 			else
 				return 0;
 		});

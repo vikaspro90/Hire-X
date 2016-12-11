@@ -47,23 +47,18 @@ var hirex = angular .module("hirexModule",[])
 								.then(function(response) {
 									// This is a success callback and will be called for status 200-299
 									$scope.loginData = response.data;
-									console.log($scope.loginData);
+									//console.log($scope.loginData);
 									//based on the response, we will either show an error message or redirect the user to the homepage
-									if ($scope.loginData) {
-										if($scope.loginData== '1'){
-											$scope.loginMessage = "Logging in. Please wait..";
-											if ($scope.user.role == "jobseeker") {
-												$window.location.href = "jobseeker.html";
-											}
-											else {
-												$window.location.href = "employer.html"
-											}
-										} else {
-											$scope.loginMessage = "Invalid credentials. Please try again.";
-											$scope.user = {};
+									if($scope.loginData == 0){
+										$scope.loginMessage = "Logging in. Please wait..";
+										if ($scope.user.role == "jobseeker") {
+											$window.location.href = "jobseeker.html";
+										}
+										else {
+											$window.location.href = "employer.html"
 										}
 									} else {
-										$scope.loginMessage = "Sorry. Internal server error.";
+										$scope.loginMessage = "Invalid credentials. Please try again.";
 										$scope.user = {};
 									}
 								},
@@ -155,7 +150,7 @@ var hirex = angular .module("hirexModule",[])
 										$scope.signupResponse = response;
 										$scope.signupData = response.data;
 										$scope.signupStatus = response.status;
-										if ($scope.signupData == '1') {
+										if ($scope.signupData == '0') {
 											$scope.signupMessage = "Registered. Redirecting to home..";
 											// redirect to home page.
 											if ($scope.user.role == "jobseeker") {
@@ -166,14 +161,14 @@ var hirex = angular .module("hirexModule",[])
 											}
 										}
 										else {
-											$scope.signupMessage = "There was an error processing your request.";
+											$scope.signupMessage = "This email Id is already registered with us. Please use a different email Id if you are registering for a different role.";
 										}
 									},
 									function(response){
 										$scope.signupMessage = "Sorry something went wrong on the server.";
 									});
 								} else{
-									$scope.signupMessage = "Passwords do not match.";
+									$scope.signupMessage = "Both passwords should match.";
 								}
 							}
 						};
@@ -210,8 +205,42 @@ var hirex = angular .module("hirexModule",[])
 							});
 						};
 					})
+					.controller("searchController", function($scope, $http, $window){
+						// take input from the search employer page and send the criteria to backend,
+						// If any matching profile exists, take to the next page and display the results on that page.
+						// Pass the details from this page to the next page
+						$scope.criteria = {};
+						$scope.search = function() {
+							$http({
+									method : "POST",
+									url : instanceURL + "updateJobseeker",
+									data : $scope.details
+							})
+							.then(function(response) {
+								// This is a success callback and will be called for status 200-299
+								$scope.updateData = response.data;
+								console.log($scope.responseData);
+								//based on the response, we will either show an error message or redirect the user to the homepage
+								if($scope.responseData== '1') {
+									$scope.updateMessage = "Your details have been updated as requested.";
+								} else {
+									$scope.updateMessage = "Sorry. An error occured and your details could not be updated.";
+								}
+							},
+							function(response){
+								// This is a failure callback
+								$scope.updateMessage = "Oops something went wrong. Please try after sometime.";
+							});
+						};
+					})
+					.controller("resultsController", function($scope, $http, $window){
+						// If we get to this page, we already know that there are matching profiles.
+						// Need to get the details from the previous page
+					})
 					.controller("profileController", function($scope, $http, $window){
 						$scope.emailId = "";
+						$scope.mainDiv = true;
+
 						var url = document.location.href;
 						var params = url.split('?')[1];
 						if (params){
@@ -221,8 +250,8 @@ var hirex = angular .module("hirexModule",[])
 							$scope.profileMessage = "Please wait while we fetch the profile details of "+$scope.emailId+".";
 							// fetch the details for the email
 							var details = {"emailId":$scope.emailId};
-							console.log("sending req");
-							console.log(details);
+							// console.log("sending req");
+							// console.log(details);
 							$http({
 									method : "POST",
 									url : instanceURL + "getJobseekerDetails",
@@ -231,47 +260,53 @@ var hirex = angular .module("hirexModule",[])
 							.then(function(response) {
 								// This is a success callback and will be called for status 200-299
 								$scope.profileData = response.data;
-								$scope.profileMessage = "Below are the details of "+$scope.profileData.name+".";
-								if($scope.profileData.major) {
-									$scope.major = $scope.profileData.major;
+								// console.log($scope.profileData);
+								if($scope.profileData.email) {
+									$scope.profileMessage = "Below are the details of "+$scope.profileData.name;
+									if($scope.profileData.major) {
+										$scope.major = $scope.profileData.major;
+									} else {
+										$scope.major = "Not updated";
+									}
+									if($scope.profileData.exp) {
+										$scope.exp = $scope.profileData.exp;
+									} else {
+										$scope.exp = "Not updated";
+									}
+									if($scope.profileData.relocation) {
+										$scope.relocation = $scope.profileData.relocation;
+									} else {
+										$scope.relocation = "Not updated";
+									}
+									if($scope.profileData.uscitizen) {
+										$scope.uscitizen = $scope.profileData.uscitizen;
+									} else {
+										$scope.uscitizen = "Not updated";
+									}
+									if($scope.profileData.notice) {
+										$scope.notice = $scope.profileData.notice;
+									} else {
+										$scope.notice = "Not updated";
+									}
+									if($scope.profileData.gender) {
+										$scope.gender = $scope.profileData.gender;
+									} else {
+										$scope.gender = "Not updated";
+									}
+									if($scope.profileData.veteran) {
+										$scope.veteran = $scope.profileData.veteran;
+									} else {
+										$scope.veteran = "Not updated";
+									}
+									if($scope.profileData.disabled) {
+										$scope.disabled = $scope.profileData.disabled;
+									} else {
+										$scope.disabled = "Not updated";
+									}			
 								} else {
-									$scope.major = "Not updated";
+									$scope.mainDiv = false;
+									$scope.profileMessage = "We do not have any profile with the email ID "+$scope.emailId;
 								}
-								if($scope.profileData.exp) {
-									$scope.exp = $scope.profileData.exp;
-								} else {
-									$scope.exp = "Not updated";
-								}
-								if($scope.profileData.relocation) {
-									$scope.relocation = $scope.profileData.relocation;
-								} else {
-									$scope.relocation = "Not updated";
-								}
-								if($scope.profileData.uscitizen) {
-									$scope.uscitizen = $scope.profileData.uscitizen;
-								} else {
-									$scope.uscitizen = "Not updated";
-								}
-								if($scope.profileData.notice) {
-									$scope.notice = $scope.profileData.notice;
-								} else {
-									$scope.notice = "Not updated";
-								}
-								if($scope.profileData.gender) {
-									$scope.gender = $scope.profileData.gender;
-								} else {
-									$scope.gender = "Not updated";
-								}
-								if($scope.profileData.veteran) {
-									$scope.veteran = $scope.profileData.veteran;
-								} else {
-									$scope.veteran = "Not updated";
-								}
-								if($scope.profileData.disabled) {
-									$scope.disabled = $scope.profileData.disabled;
-								} else {
-									$scope.disabled = "Not updated";
-								}								
 							},
 							function(response){
 								console.log(response.data);
@@ -279,11 +314,28 @@ var hirex = angular .module("hirexModule",[])
 								$scope.profileMessage = "Oops something went wrong. Please try after sometime.";
 							});
 						} else {
-							$scope.profileMessage = "The given person is not in our database.";
+							$scope.mainDiv = false;
+							$scope.profileMessage = "We need an email ID to get the details of a profile.";
 						}
 					})
-					.controller("displayResults", function($scope, $http, $window){
-						
+					.controller("logoutController", function($scope, $http, $window){
+						console.log("In Logout");
+						$scope.logout = function(){
+							console.log("Logging out");
+							$http({
+										method : "POST",
+										url : instanceURL + "logout",
+								})
+								.then(function(response) {
+									// This is a success callback and will be called for status 200-299
+									$window.alert("You have been logged out. Click Ok to continue.");
+									$window.location.href = "login.html";
+								},
+								function(response){
+									// This is a failure callback
+									$window.alert("Oops something went wrong. Could not log you out.");
+								});
+						};
 					})
 					.config(function ($httpProvider) {
 						$httpProvider.defaults.withCredentials = true;

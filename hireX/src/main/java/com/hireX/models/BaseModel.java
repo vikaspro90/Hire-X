@@ -17,8 +17,9 @@ public class BaseModel {
 		return mongoClient.getDatabase("hirex");
 	}
 
-	public static boolean verifyLogin(String email, String password, String role) {
-		boolean status=false, emailValid=false, pwdValid=false, roleValid=false;
+	public static int verifyLogin(String email, String password, String role) {
+		boolean emailValid=false, pwdValid=false, roleValid=false;
+		int status = 0;
 		MongoDatabase db = getConnection();
 		MongoCollection<Document> col = db.getCollection("jobseekers");
 		Document query = new Document("email", new Document("$eq", email));
@@ -29,13 +30,20 @@ public class BaseModel {
 			if (doc.get("password").equals(password) && doc.get("role").equals(role)) {
 				pwdValid = true;
 				roleValid = true;
-				status = true;
 			}
+			else {
+				// invalid password or role.
+				status = 1;
+			}
+		}
+		else {
+			// Email does not exist. Say invalid credentials
+			status = 1;
 		}
 		return status;
 	}
-	public static boolean addUser(String email, String password, String role, String fullName) {
-		boolean status = true;
+	public static int addUser(String email, String password, String role, String fullName) {
+		int status = 0;
 		MongoDatabase db = getConnection();
 		MongoCollection<Document> col;
 		// Decide which collection to add the user to
@@ -49,14 +57,16 @@ public class BaseModel {
 		Document query = new Document("email", new Document("$eq", email));
 		long count = col.count(query);
 		if(count > 0) {
-			return false;
+			status = 1;
 		}
-		Document user = new Document();
-		user.put("email", email);
-		user.put("password", password);
-		user.put("role", role);
-		user.put("name", fullName);
-		col.insertOne(user);
+		else {
+			Document user = new Document();
+			user.put("email", email);
+			user.put("password", password);
+			user.put("role", role);
+			user.put("name", fullName);
+			col.insertOne(user);
+		}
 		return status;
 	}
 	
@@ -93,14 +103,19 @@ public class BaseModel {
 		MongoDatabase db = getConnection();
 		MongoCollection<Document> col = db.getCollection("jobseekers");
 		Document query = new Document("email", new Document("$eq", email));
-		Document details = col.find(query).into(new ArrayList<Document>()).get(0);
-		return details.toJson();
+		if (col.count(query) == 0) {
+			return "{}";
+		}
+		else {
+			Document details = col.find(query).into(new ArrayList<Document>()).get(0);
+			return details.toJson();
+		}
 	}
 	
-	public static ArrayList<String> getJobseekers(String major, String exp, String relocation, String uscitigen, String notice, String gender, String veteran, String disabled) {
+	public static ArrayList<Document> getJobseekers(String major, String exp, String relocation, String uscitigen, String notice, String gender, String veteran, String disabled) {
 		// This gets the details of all the job seekers that match the criteria
 		// and returns a list of json strings
-		ArrayList<String> jobseekers = new ArrayList<String>();
+		ArrayList<Document> jobseekers = new ArrayList<Document>();
 		
 		return jobseekers;
 	}

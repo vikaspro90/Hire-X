@@ -1,6 +1,5 @@
 package com.hireX.controllers;
 
-
 public class loginControllerParams {
 	String emailId;
 	String password;

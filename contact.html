@@ -15,6 +15,11 @@
 <!-- start slider -->
 <link href="web/css/slider.css" rel="stylesheet" type="text/css" media="all" />
 <script type="text/javascript" src="web/js/modernizr.custom.28468.js"></script>
+
+<script src="jquery.js"></script>
+<script src="jqBootstrapValidation.js"></script>
+<script src="contact_me.js"></script>
+
 <!-- font-Awesome -->
    	<link rel="stylesheet" href="fonts/web/css/font-awesome.min.css">
 <!-- font-Awesome -->
@@ -70,18 +75,22 @@
 				<div class="col-md-8">
 				  <div class="contact-form">
 				  	<h2>Contact Us</h2>
-					    <form method="post" action="contact-post.html">
+					    <form name"sendMessage" id="contactForm">
 					    	<div>
 						    	<span>name</span>
-						    	<span><input type="username" class="form-control" id="userName"></span>
+						    	<span><input type="username" class="form-control" id="name"></span>
 						    </div>
 						    <div>
 						    	<span>e-mail</span>
-						    	<span><input type="email" class="form-control" id="inputEmail3"></span>
+						    	<span><input type="email" class="form-control" id="email"></span>
+						    </div>
+							<div>
+						    	<span>phone number</span>
+						    	<span><input type="number" class="form-control" id="phone"></span>
 						    </div>
 						    <div>
 						    	<span>subject</span>
-						    	<span><textarea name="userMsg"> </textarea></span>
+						    	<span><textarea rows = "5" class="form-control" name="userMsg" id="message"> </textarea></span>
 						    </div>
 						   <div>
 						   		<label class="fa-btn btn-1 btn-1e"><input type="submit" value="submit us"></label>

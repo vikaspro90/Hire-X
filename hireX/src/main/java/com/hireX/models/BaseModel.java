@@ -9,7 +9,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BaseModel {
 	private static MongoClient mongoClient = new MongoClient("localhost");
@@ -47,7 +49,7 @@ public class BaseModel {
 		MongoDatabase db = getConnection();
 		MongoCollection<Document> col;
 		// Decide which collection to add the user to
-		if(role=="employer") {
+		if(role.equals("employer")) {
 			col = db.getCollection("employers");
 		}
 		else {
@@ -112,11 +114,43 @@ public class BaseModel {
 		}
 	}
 	
-	public static ArrayList<Document> getJobseekers(String major, String exp, String relocation, String uscitigen, String notice, String gender, String veteran, String disabled) {
+	public static ArrayList<String> getJobseekers(String major, String exp, String relocation, String uscitizen, String notice, String gender, String veteran, String disabled) {
 		// This gets the details of all the job seekers that match the criteria
 		// and returns a list of json strings
 		ArrayList<Document> jobseekers = new ArrayList<Document>();
-		
-		return jobseekers;
+		MongoDatabase db = getConnection();
+		MongoCollection<Document> col = db.getCollection("jobseekers");
+		//create a map which will be passed as input to the Document constructor
+		Map <String, Object> query = new HashMap<String,Object>();
+		if(!major.equals("")){
+			query.put("major", new Document("$eq",major));
+		}
+		if(!exp.equals("")){
+			query.put("exp", new Document("$eq",exp));
+		}
+		if(!relocation.equals("")){
+			query.put("relocation", new Document("$eq",relocation));
+		}
+		if(!uscitizen.equals("")){
+			query.put("uscitizen", new Document("$eq",uscitizen));
+		}
+		if(!notice.equals("")){
+			query.put("notice", new Document("$eq",notice));
+		}
+		if(!gender.equals("")){
+			query.put("gender", new Document("$eq",gender));
+		}
+		if(!veteran.equals("")){
+			query.put("veteran", new Document("$eq",veteran));
+		}
+		if(!disabled.equals("")){
+			query.put("disabled", new Document("$eq",disabled));
+		}
+		jobseekers = col.find(new Document(query)).into(new ArrayList<Document>());
+		ArrayList<String> ret = new ArrayList<>();
+		for(Document doc : jobseekers){
+			ret.add(doc.toJson());
+		}
+		return ret;
 	}
 }

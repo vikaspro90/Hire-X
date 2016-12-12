@@ -35,7 +35,7 @@ public class BaseController {
 	}
 	
 	public static void main(String[] args){
-		enableCORS("http://dev.localhost.com", "POST", "");
+		enableCORS("http://dev.localhost.com:8080", "POST", "");
 		before((request, response)->{
 			// This should be executed for everything except login/signup/logout
 			// If email in session, then check for role. if role does not match, then not allowed.
@@ -99,7 +99,7 @@ public class BaseController {
 			res.type("application/json");
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = (JSONObject)parser.parse(req.body());
-			ArrayList<Document> candidates = BaseModel.getJobseekers((String)jsonObj.get("major"), (String)jsonObj.get("exp"), (String)jsonObj.get("relocation"), (String)jsonObj.get("uscitizen"), (String)jsonObj.get("notice"), (String)jsonObj.get("gender"), (String)jsonObj.get("veteran"), (String)jsonObj.get("disabled"));
+			ArrayList<String> candidates = BaseModel.getJobseekers((String)jsonObj.get("major"), (String)jsonObj.get("exp"), (String)jsonObj.get("relocation"), (String)jsonObj.get("uscitizen"), (String)jsonObj.get("notice"), (String)jsonObj.get("gender"), (String)jsonObj.get("veteran"), (String)jsonObj.get("disabled"));
 			return candidates;
 		});
 		
